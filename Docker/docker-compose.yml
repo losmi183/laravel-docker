@@ -1,0 +1,40 @@
+services:
+  php-apache:
+    container_name: "${CONTAINER_NAME_PREFIX}-laravel-docker"
+    build: .
+    env_file:
+      - ./.env
+    volumes:
+      - ${PATH_TO_LARAVEL_PROJECT}:/var/www/html
+    ports:
+      - "80:80"
+    tty: true
+    
+  db:
+    container_name: "${CONTAINER_NAME_PREFIX}-mariadb"
+    image: mariadb:11.4.2
+    environment:
+      - MARIADB_ROOT_USER=${ROOT_USER}
+      - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=yes
+      - MARIADB_USER=${DB_USER}
+      - MARIADB_PASSWORD=${DB_PASSWORD}
+      - MARIADB_DATABASE=${DB_NAME}
+    volumes:
+      - db:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  # mailer:
+  #   container_name: "${CONTAINER_NAME_PREFIX}-mailer"
+  #   image: schickling/mailcatcher
+  #   ports:
+  #     - "1025:1025"
+  #     - "1080:1080"
+
+  # adminer:
+  #   container_name: "${CONTAINER_NAME_PREFIX}-adminer"
+  #   image: adminer
+  #   ports:
+  #     - "8080:8080"
+volumes:
+  db:
